@@ -1,0 +1,53 @@
+---
+- name: Setup localhost Fedora machine
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Import Microsoft GPG key
+      tags: vscode
+      ansible.builtin.shell: rpm --import https://packages.microsoft.com/keys/microsoft.asc
+
+    - name: Add Visual Studio Code repository
+      tags: vscode
+      ansible.builtin.shell: |
+        echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo
+
+    - name: Check for updates
+      tags: vscode
+      ansible.builtin.shell: dnf check-update
+      register: check_update_output
+      changed_when: false
+
+    - name: Install packages
+      tags: packages
+      dnf:
+        name:
+        name: ['code', 'neovim', 'git', 'neofetch', 'fish', 'lsd', 'nodejs', 'npm', 'tmux', 'terminator']
+        state: latest
+
+    - name: Install n
+      tags: node
+      ansible.builtin.shell: npm i -g n
+    # - name: Modify configuration file
+    #   ansible.builtin.lineinfile:
+    #     path: /path/to/your/destination/file
+    #     regexp: '^search_pattern_to_find_line'
+    #     line: 'the_new_line_to_replace_the_matched_line'
+
+    - name: Change default shell to Fish for myuser
+      tags: config
+      ansible.builtin.shell: chsh -s /bin/fish 
+
+    - name: Copy Fish shell configuration directory
+      tags: config
+      copy:
+        src: /home/user/Documents/dotfiles/fish
+        dest: ~/.config/fish/
+    
+    - name: Copy tmux configuration file
+      tags: config
+      copy:
+        src: /home/user/Documents/dotfiles/.tmux.conf
+        dest: ~/.tmux.conf
+
+        
