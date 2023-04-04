@@ -38,16 +38,27 @@
       tags: config
       ansible.builtin.shell: chsh -s /bin/fish 
 
-    - name: Copy Fish shell configuration directory
-      tags: config
-      copy:
-        src: /home/user/Documents/dotfiles/fish
-        dest: ~/.config/fish/
+    # - name: Copy Fish shell configuration directory
+    #   tags: config
+    #   copy:
+    #     src: /home/user/Documents/dotfiles/fish
+    #     dest: ~/.config/fish/
     
+    - name: Copy Fish shell configuration file
+      tags: config
+      ansible.builtin.shell: cp /home/user/Documents/dotfiles/fish/ ~/.config/
+
+    # - name: Copy tmux configuration file
+    #   tags: config
+    #   copy:
+    #     src: /home/user/Documents/dotfiles/.tmux.conf
+    #     dest: ~/.tmux.conf
+
     - name: Copy tmux configuration file
       tags: config
-      copy:
-        src: /home/user/Documents/dotfiles/.tmux.conf
-        dest: ~/.tmux.conf
+      ansible.builtin.shell: cp /home/user/Documents/dotfiles/.tmux.conf ~/.tmux.conf
+
+
+
 
         
